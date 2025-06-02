@@ -1,10 +1,12 @@
 from transformers import BertTokenizer, BertForSequenceClassification
 
-# 모델 캐시 경로 설정
-cache_dir = "./model_cache"
+# 모델 저장할 디렉토리
+save_path = "./model/bert-smishing-model"
 
-# 다운로드 (한 번만 실행하면 됨)
-tokenizer = BertTokenizer.from_pretrained("sseul2/bert-smishing-model", cache_dir=cache_dir)
-model = BertForSequenceClassification.from_pretrained("sseul2/bert-smishing-model", cache_dir=cache_dir)
+# 모델 다운로드 (처음 한 번만 실행)
+tokenizer = BertTokenizer.from_pretrained("sseul2/bert-smishing-model")
+model = BertForSequenceClassification.from_pretrained("sseul2/bert-smishing-model")
 
-print("모델 캐시 완료")
+# 저장
+tokenizer.save_pretrained(save_path)
+model.save_pretrained(save_path)
