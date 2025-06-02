@@ -8,8 +8,8 @@ import torch
 app = FastAPI()
 
 # 모델 로딩
-tokenizer = BertTokenizer.from_pretrained("sseul2/bert-smishing-model2", local_files_only=True)
-model = BertForSequenceClassification.from_pretrained("sseul2/bert-smishing-model2", local_files_only=True)
+tokenizer = BertTokenizer.from_pretrained("sseul2/bert-smishing-model2")
+model = BertForSequenceClassification.from_pretrained("sseul2/bert-smishing-model2")
 
 # 입력 모델
 class InputText(BaseModel):
