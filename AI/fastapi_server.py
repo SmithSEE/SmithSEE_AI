@@ -1,4 +1,4 @@
-# uvicorn fastapi_server:app --host 0.0.0.0 --port 8001
+# uvicorn AI.fastapi_server:app --host 0.0.0.0 --port 8001
 
 from fastapi import FastAPI
 from pydantic import BaseModel
@@ -8,8 +8,8 @@ import torch
 app = FastAPI()
 
 # 모델 로딩
-model = BertForSequenceClassification.from_pretrained("sseul2/bert-smishing-model")
-tokenizer = BertTokenizer.from_pretrained("sseul2/bert-smishing-model")
+tokenizer = BertTokenizer.from_pretrained("sseul2/bert-smishing-model2", local_files_only=True)
+model = BertForSequenceClassification.from_pretrained("sseul2/bert-smishing-model2", local_files_only=True)
 
 # 입력 모델
 class InputText(BaseModel):
