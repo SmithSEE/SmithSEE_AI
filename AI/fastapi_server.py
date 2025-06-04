@@ -1,4 +1,4 @@
-# uvicorn AI.fastapi_server:app --host 0.0.0.0 --port 8001
+# uvicorn AI.fastapi_server:app --host 0.0.0.0 --port 8002
 
 from fastapi import FastAPI
 from pydantic import BaseModel
@@ -23,18 +23,21 @@ class PredictionResult(BaseModel):
 # [post] /predict 텍스트 받아와서 예측 
 @app.post("/predict", response_model=PredictionResult)
 def predict(input: InputText):
-    print("받은 텍스트:", input.text)
+    print("받은 텍스트:", input.text) 
 
     inputs = tokenizer(input.text, return_tensors="pt", truncation=True, padding=True)
     inputs = {k: v.to(model.device) for k, v in inputs.items()}
 
-    model.eval()
+    model.eval() 
     with torch.no_grad():
         outputs = model(**inputs)
 
     probs = torch.nn.functional.softmax(outputs.logits, dim=1)
     smishing_score = float(probs[0][1])
     is_smishing = smishing_score > 0.5
+
+    print(f"모델 예측 확률 - 정상: {probs[0][0]:.4f}, 스미싱: {probs[0][1]:.4f}")
+    print(f"최종 결과 - smishing: {'LABEL_1' if is_smishing else 'LABEL_0'}, riskScore: {smishing_score:.4f}")
 
     return {
         "smishing": "LABEL_1" if is_smishing else "LABEL_0",
@@ -46,3 +49,4 @@ def predict(input: InputText):
 
 
 # 마지막에 텍스트 모델에 학습
+
