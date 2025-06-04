@@ -25,22 +25,22 @@ class PredictionResult(BaseModel):
 def predict(input: InputText):
     print("받은 텍스트:", input.text)
 
-    # 토크나이징 및 예측
     inputs = tokenizer(input.text, return_tensors="pt", truncation=True, padding=True)
-    outputs = model(**inputs)
-    probs = torch.nn.functional.softmax(outputs.logits, dim=1)
+    inputs = {k: v.to(model.device) for k, v in inputs.items()}
 
+    model.eval()
+    with torch.no_grad():
+        outputs = model(**inputs)
+
+    probs = torch.nn.functional.softmax(outputs.logits, dim=1)
     smishing_score = float(probs[0][1])
     is_smishing = smishing_score > 0.5
-
-    # 출력 로그
-    print(f"모델 예측 확률 - 정상: {probs[0][0]:.4f}, 스미싱: {probs[0][1]:.4f}")
-    print(f"최종 결과 - smishing: {'LABEL_1' if is_smishing else 'LABEL_0'}, riskScore: {smishing_score:.4f}")
 
     return {
         "smishing": "LABEL_1" if is_smishing else "LABEL_0",
         "riskScore": round(smishing_score, 4)
     }
+
 
 # 들어온 텍스트 전처리
 
