@@ -8,8 +8,8 @@ import torch
 app = FastAPI()
 
 # 모델 로딩
-tokenizer = BertTokenizer.from_pretrained("sseul2/bert-smishing-model")
-model = BertForSequenceClassification.from_pretrained("sseul2/bert-smishing-model")
+tokenizer = BertTokenizer.from_pretrained("sseul2/bert-smishing-model-final")
+model = BertForSequenceClassification.from_pretrained("sseul2/bert-smishing-model-final")
 
 # 입력 모델
 class InputText(BaseModel):
@@ -20,9 +20,10 @@ class PredictionResult(BaseModel):
     smishing: str
     riskScore: float
 
+# [post] /predict 텍스트 받아와서 예측 
 @app.post("/predict", response_model=PredictionResult)
 def predict(input: InputText):
-    print("📥 받은 텍스트:", input.text)
+    print("받은 텍스트:", input.text)
 
     # 토크나이징 및 예측
     inputs = tokenizer(input.text, return_tensors="pt", truncation=True, padding=True)
@@ -40,3 +41,8 @@ def predict(input: InputText):
         "smishing": "LABEL_1" if is_smishing else "LABEL_0",
         "riskScore": round(smishing_score, 4)
     }
+
+# 들어온 텍스트 전처리
+
+
+# 마지막에 텍스트 모델에 학습
